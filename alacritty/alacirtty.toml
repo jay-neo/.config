@@ -1,0 +1,13 @@
+[window]
+opacity = 0.9
+padding.x = 10
+padding.y = 10
+decorations = "Buttonless"
+decorations_theme_variant = "Dark" # "Dark"
+Startup_mode = "Maximized"
+
+[font]
+normal.family = "Hack"
+
+
+size = 25.0
