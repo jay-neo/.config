@@ -13,7 +13,7 @@ function getInstanceId {
 function launchInstance {
     $InstanceName = Read-Host ">> Instance Name"
     if ($InstanceName -eq '') {
-        $InstanceName = (Get-Date).tostring("dd-MM-yyyy_HH:mm:ss")
+        $InstanceName = (Get-Date).tostring("jay-neo_dd-MM-yyyy_HH:mm:ss")
     }
 
     $InstanceID = Read-Host ">> OS Image Name"
@@ -32,13 +32,19 @@ function launchInstance {
 
     $SSHKeyName = Read-Host ">> SSH Key Pair Name"
     while ($SSHKeyName -eq '') {
-        $SSHKeyName = Read-Host ">> Valid SSH Key Pair Name"
+        $SSHKeyName = Read-Host ">> SSH Key Pair Name"
     }
-    $cmd = "aws ec2 run-instances --image-id $InstanceID --count 1 --instance-type t2.micro --key-name $SSHKeyName --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=$InstanceName}]'"
 
-    $SecurityGroupID = Read-Host ">> Security Group ID"
-    if ($SecurityGroupID -ne '') {
-        $cmd += " --security-group-ids $SecurityGroupID"
+    $SecurityGroupName = Read-Host ">> Security Group Name"
+    while ($SecurityGroupName -eq '') {
+        $SecurityGroupName = Read-Host ">> Security Group Name"
+    }
+
+    $cmd = "aws ec2 run-instances --image-id $InstanceID --count 1 --instance-type t2.micro --key-name $SSHKeyName --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=$InstanceName}]' --security-groups $SecurityGroupName"
+
+    $UserDataFile = Read-Host ">> User Data"
+    if ($UserDataFile -ne '') {
+        $cmd += " --user-data 'curl -L https://raw.githubusercontent.com/jay-neo/aws/master/$UserDataFile.sh | bash'"
     }
 
     return $cmd
